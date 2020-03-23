@@ -8,17 +8,39 @@
 volatile float desiredTemp;
 volatile float currTemp;
 
+//declare and initialize pointers to the addresses
+volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
 volatile unsigned int * HEX_ptr = (unsigned int *)HEX3_HEX0_BASE;
 volatile unsigned int * BTN_ptr = (unsigned int *)BTN_BASE;
+
+//turn off all LEDs to start
+*LED_ptr = 0x0;
 
 int lookUpTable[10] = 
 	{0x3F, 0x6, 0x5B, 0x4F, 0x66, 
 	0x6D, 0x7D, 0x7, 0x7F, 0x67};
 	
+
+//functions
+
 float HexToDecimal(){
-	
-	
-	
-	
+}
+
+void stimulateHeat(){
+    float currentTemp = hexToDecimal();
+    
+    //turn on LED
+    if(currentTemp <= desiredTemp - 2.0){
+        *LED_ptr = 0x1;
+        increaseTemp();
+    }
+    //turn off LED
+    else{
+        *LED_ptr = 0x0;
+    }
+}
+
+int main(){
+    
 }
 
