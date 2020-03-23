@@ -5,14 +5,17 @@
 #define HEX3_HEX0_BASE 0xFF200020
 #define BTN_BASE 0xFF200050
 
-volatile float desiredTemp;
-volatile float currTemp;
 
 //declare and initialize pointers to the addresses
+
 volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
 volatile unsigned int * HEX_ptr = (unsigned int *)HEX3_HEX0_BASE;
 volatile unsigned int * BTN_ptr = (unsigned int *)BTN_BASE;
 
+//declare gloabl variables
+
+volatile float desiredTemp;
+volatile float currTemp;
 
 int lookUpTable[10] = 
 	{0x3F, 0x6, 0x5B, 0x4F, 0x66, 
@@ -20,7 +23,6 @@ int lookUpTable[10] =
 	
 
 //functions
-
 
 void decreaseTemp() {
     currTemp -= 1;
