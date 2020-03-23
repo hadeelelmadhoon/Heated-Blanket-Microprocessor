@@ -80,7 +80,7 @@ void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr) {
 	unsigned int LED_value = 0x0;
 
 	//turn on LED
-	if (currTemp <= desiredTemp - 2.0) {
+	if (currTemp <= (desiredTemp - 2.0)) {
 		LED_value = 0x1;
 		increaseTemp();
 	}
@@ -128,6 +128,8 @@ int main() {
 	volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE;//Address of GPIO
 	volatile unsigned int * HEX_ptr = (unsigned int *)HEX3_HEX0_BASE;
 	volatile unsigned int * BTN_ptr = (unsigned int *)BTN_BASE;
+	volatile unsigned int * SW_ptr = (unsigned int *)SW_BASE;
+
 
 	//set bit as output, bit = 1, 0001
 	*(JP1_ptr + 1) |= 0x1;
@@ -143,6 +145,13 @@ int main() {
 	*HEX_ptr |= lookUpTable[0] << 24;
 
 
+	while (1) {
+		if (SW_ptr & 0x1) {
+			setDesiredTemp(BTN_ptr, HEX_ptr);
+		}
+		else {
 
+		}
+	}
 
 }
