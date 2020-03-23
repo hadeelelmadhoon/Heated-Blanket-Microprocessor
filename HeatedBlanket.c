@@ -19,7 +19,7 @@ int lookUpTable[10] =
 
 //functions
 
-void setDesiredTemp(unsigned int *BTN_ptr, unsigned int *HEX_ptr) {
+void setDesiredTemp(volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
 	// value to determine if desired temp should be changes
 	int setTemp = 0;
 	// variables to hold each number 
@@ -72,7 +72,7 @@ void setDesiredTemp(unsigned int *BTN_ptr, unsigned int *HEX_ptr) {
 	desiredTemp = (tens * 10.0) + ones + (decimal / 10.0);
 }
 
-void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr,unsigned int*HEX_ptr) {
+void stimulateHeat(volatile unsigned int *LED_ptr, volatile unsigned int *JP1_ptr, volatile unsigned int*HEX_ptr) {
 	unsigned int LED_value = 0x0;
 
 	//turn on LED
@@ -86,14 +86,14 @@ void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr,unsigned int*HEX
 
 //functions
 
-void decreaseTemp(unsigned int *HEX_ptr) {
+void decreaseTemp(volatile unsigned int *HEX_ptr) {
 	currTemp -= 1;
-	displayHex(Hex_ptr,currTemp);
+	displayHex(HEX_ptr,currTemp);
 }
 
-void increaseTemp(unsigned int *HEX_ptr) {
+void increaseTemp(volatile unsigned int *HEX_ptr) {
 	currTemp += 2;
-	displayHex(Hex_ptr, currTemp);
+	displayHex(HEX_ptr, currTemp);
 
 }
 
@@ -109,8 +109,8 @@ unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 	return -1;
 }
 
-void displayHex(unsigned int *HEX_ptr,float currTemp) {
-	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0)) * 10;
+void displayHex(volatile unsigned int *HEX_ptr,float currTemp) {
+	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0) * 10;
 	unsigned int unitsValue = (unsigned int)currTemp % 10;
 	unsigned int tensValue = ((unsigned int)currTemp - unitsValue) / 10;
 
@@ -121,7 +121,7 @@ void displayHex(unsigned int *HEX_ptr,float currTemp) {
 
 }
 
-float HexToDecimal(unsigned int* HEX_ptr) {
+float HexToDecimal(volatile unsigned int* HEX_ptr) {
 
 	unsigned int decimalValue = *HEX_ptr & 0xff;
 	unsigned int unitsValue = *HEX_ptr & 0xff0000;
@@ -161,9 +161,9 @@ int main() {
 
 
 	while (1) {
-		if (SW_ptr & 0x1) {
+		if (*SW_ptr & 0x1) {
 			setDesiredTemp(BTN_ptr, HEX_ptr);
-			stimulateHeat(LED_ptr, JP1_ptr);
+			stimulateHeat(LED_ptr, JP1_ptr,HEX_ptr);
 			decreaseTemp(HEX_ptr);
 		}
 		else {
