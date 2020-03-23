@@ -23,10 +23,6 @@ void increaseTemp() {
 
 //functions
 
-float HexToDecimal(){
-	
-}
-
 void setDesiredTemp(){
 	// value to determine if desired temp should be changes
 	bool setTemp = false;
@@ -42,7 +38,7 @@ void setDesiredTemp(){
 	while(setTemp){
 		
 		// check if B3 is pressed
-		if(BTN_ptr &= 0x04){
+		if(BTN_ptr &0x04){
 			// if current value is 3, reset to 0 (max temperature is 30.0)
 			if(tens == 3){
 				tens = 0;
@@ -51,7 +47,7 @@ void setDesiredTemp(){
 			*HEX_ptr |= lookUpTable[tens++] << 24;
 		}
 		// check if B1 is pressed
-		else if (BTN_ptr &= 0x02){
+		else if (BTN_ptr & 0x02){
 			// if current value is 9, reset to 0
 			if(tens == 3 || decimal == 9){
 				decimal = 0;
@@ -60,7 +56,7 @@ void setDesiredTemp(){
 			*HEX_ptr |= lookUpTable[decimal++];
 		}
 		// check if B2 is pressed
-		else if(BTN_ptr &= 0x03){
+		else if(BTN_ptr & 0x03){
 			// if current value is 9, reset to 0
 			if(tens == 3 || ones == 9){
 				ones = 0;
