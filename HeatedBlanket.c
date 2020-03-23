@@ -28,9 +28,21 @@ int lookUpTable[10] =
 	0x6D, 0x7D, 0x7, 0x7F, 0x67};
 	
 
+
+
+
+*HEX_ptr = lookUpTable[0];
+*HEX_ptr |= lookUpTable[0] << 16;
+*HEX_ptr |= lookUpTable[0] << 24;
+
 //functions
 
 float HexToDecimal(){
+
+	unsigned int decimalValue = *HEX_ptr & 0xff;
+	unsigned int unitsValue = *HEX_ptr & 0xff0000;
+	unsigned int tensValue = *HEX_ptr & 0xff000000;
+
 }
 
 void stimulateHeat(){
