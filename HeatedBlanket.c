@@ -7,27 +7,28 @@
 //declare and initialize pointers to the addresses
 volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
 
-//turn off all LEDs to start
-*LED_ptr = 0x0;
-
 //functions
 
 void stimulateHeat(){
     float currentTemp = hexToDecimal();
-    
+    unsigned int LED_value = 0x0;
     //turn on LED
     if(currentTemp <= desiredTemp - 2.0){
-        *LED_ptr = 0x1;
+        LED_value = 0x1;
+        *LED_ptr = LED_value;
         increaseTemp();
     }
     //turn off LED
     else{
-        *LED_ptr = 0x0;
+        *LED_ptr = LED_value;
     }
 }
 
 int main(){
     
+    //turn off all LEDs to start
+    unsigned int LED_value = 0x0;
+    *LED_ptr = LED_value;
     
 }
 
