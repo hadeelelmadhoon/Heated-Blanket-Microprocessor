@@ -66,7 +66,7 @@ void setDesiredTemp(){
 		}
 		
 		// check if B0 is pressed
-		else if(BTN_ptr &= 0x01){
+		else if(BTN_ptr &0x01){
 			// set boolean to false to exit the function and save desired temperature
 			setTemp = false;
 		}
