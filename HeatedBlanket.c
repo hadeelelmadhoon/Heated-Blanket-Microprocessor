@@ -11,3 +11,14 @@ void decreaseTemp(unsigned int temp) {
 void increaseTemp(unsigned int temp) {
 	temp += 1;
 }
+//declare and initialize pointers to the addresses
+volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
+
+//functions
+
+
+
+int main(){
+    
+    
+}
