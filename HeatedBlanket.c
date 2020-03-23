@@ -20,17 +20,6 @@ int lookUpTable[10] =
 //functions
 
 
-void decreaseTemp(volatile unsigned int *HEX_ptr) {
-	currTemp -= 1;
-	displayHex(HEX_ptr, currTemp);
-}
-
-void increaseTemp(volatile unsigned int *HEX_ptr) {
-	currTemp += 2;
-	displayHex(HEX_ptr, currTemp);
-
-}
-
 void displayHex(volatile unsigned int *HEX_ptr, float currTemp) {
 	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0) * 10;
 	unsigned int unitsValue = (unsigned int)currTemp % 10;
@@ -42,6 +31,19 @@ void displayHex(volatile unsigned int *HEX_ptr, float currTemp) {
 
 
 }
+
+void decreaseTemp(volatile unsigned int *HEX_ptr) {
+	currTemp -= 1;
+	displayHex(HEX_ptr, currTemp);
+}
+
+void increaseTemp(volatile unsigned int *HEX_ptr) {
+	currTemp += 2;
+	displayHex(HEX_ptr, currTemp);
+
+}
+
+
 
 void setDesiredTemp(volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
 	// value to determine if desired temp should be changes
