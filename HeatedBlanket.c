@@ -23,13 +23,10 @@ void stimulateHeat(unsigned int *LED_ptr){
     //turn on LED
     if(curr <= desiredTemp - 2.0){
         LED_value = 0x1;
-        *LED_ptr = LED_value;
         increaseTemp();
     }
-    //turn off LED
-    else{
-        *LED_ptr = LED_value;
-    }
+    *LED_ptr = LED_value;
+    *JP1_ptr = LED_value;
 }
 
 //functions
@@ -51,12 +48,17 @@ int main(){
 	//declare and initialize pointers to the addresses
 
 	volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
+    volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE;//Address of GPIO
 	volatile unsigned int * HEX_ptr = (unsigned int *)HEX3_HEX0_BASE;
 	volatile unsigned int * BTN_ptr = (unsigned int *)BTN_BASE;
 
-    //turn off all LEDs to start
+    //set bit as output, bit = 1, 0001
+    *(JP1_ptr + 1) |= 0x1;
+    
+    //turn off LEDs and GPIO ports to start
     unsigned int LED_value = 0x0;
     *LED_ptr = LED_value;
+    *JP1_ptr = LED_value;
 
 	int lookUpTable[10] =
 	{ 0x3F, 0x6, 0x5B, 0x4F, 0x66,
