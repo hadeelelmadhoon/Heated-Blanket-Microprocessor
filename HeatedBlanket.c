@@ -16,11 +16,6 @@ int lookUpTable[10] =
 { 0x3F, 0x6, 0x5B, 0x4F, 0x66,
 0x6D, 0x7D, 0x7, 0x7F, 0x67 };
 
-void increaseTemp() {
-	currTemp += 1;
-}
-
-
 //functions
 
 void setDesiredTemp(unsigned int *BTN_ptr) {
@@ -38,7 +33,7 @@ void setDesiredTemp(unsigned int *BTN_ptr) {
 	while (setTemp) {
 
 		// check if B3 is pressed
-		if (BTN_ptr & 0x04) {
+		if (*BTN_ptr & 0x04) {
 			// if current value is 3, reset to 0 (max temperature is 30.0)
 			if (tens == 3) {
 				tens = 0;
@@ -47,7 +42,7 @@ void setDesiredTemp(unsigned int *BTN_ptr) {
 			*HEX_ptr |= lookUpTable[tens++] << 24;
 		}
 		// check if B1 is pressed
-		else if (BTN_ptr & 0x02) {
+		else if (*BTN_ptr & 0x02) {
 			// if current value is 9, reset to 0
 			if (tens == 3 || decimal == 9) {
 				decimal = 0;
@@ -56,7 +51,7 @@ void setDesiredTemp(unsigned int *BTN_ptr) {
 			*HEX_ptr |= lookUpTable[decimal++];
 		}
 		// check if B2 is pressed
-		else if (BTN_ptr & 0x03) {
+		else if (*BTN_ptr & 0x03) {
 			// if current value is 9, reset to 0
 			if (tens == 3 || ones == 9) {
 				ones = 0;
@@ -66,7 +61,7 @@ void setDesiredTemp(unsigned int *BTN_ptr) {
 		}
 
 		// check if B0 is pressed
-		else if (BTN_ptr & 0x01) {
+		else if (*BTN_ptr & 0x01) {
 			// set boolean to false to exit the function and save desired temperature
 			setTemp = false;
 		}
@@ -88,13 +83,15 @@ void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr) {
 	*JP1_ptr = LED_value;
 }
 
-//functions
+void increaseTemp() {
+	currTemp += 1;
+}
 
 void decreaseTemp() {
 	currTemp -= 1;
 }
 
-unsigned int linear_search(unsigned int *pointer, unsigned int n, unsigned int find)
+unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 {
 	for (int c = 0; c < n; c++)
 	{
