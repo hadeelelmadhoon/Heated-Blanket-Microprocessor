@@ -20,38 +20,22 @@ void increaseTemp() {
 	currTemp += 1;
 }
 
-void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr){
-    unsigned int LED_value = 0x0;
-    
-    //turn on LED
-    if(curr <= desiredTemp - 2.0){
-        LED_value = 0x1;
-        increaseTemp();
-    }
-    *LED_ptr = LED_value;
-    *JP1_ptr = LED_value;
+void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr) {
+	unsigned int LED_value = 0x0;
+
+	//turn on LED
+	if (currTemp <= desiredTemp - 2.0) {
+		LED_value = 0x1;
+		increaseTemp();
+	}
+	*LED_ptr = LED_value;
+	*JP1_ptr = LED_value;
 }
 
 //functions
 
 void decreaseTemp() {
 	currTemp -= 1;
-}
-
-
-float HexToDecimal(unsigned int* HEX_ptr) {
-
-	unsigned int decimalValue = *HEX_ptr & 0xff;
-	unsigned int unitsValue = *HEX_ptr & 0xff0000;
-	unsigned int tensValue = *HEX_ptr & 0xff000000;
-	
-	decimalValue = linear_search(lookUpTable, 10, decimalValue);
-	unitsValue= linear_search(lookUpTable, 10, unitsValue);
-	tensValue= linear_search(lookUpTable, 10, tensValue);
-
-	//Conversion to float
-	return tensValue * 10.0 + unitsValue * 1.0 + (decimalValue / 10.0);
-
 }
 
 unsigned int linear_search(unsigned int *pointer, unsigned int n, unsigned int find)
@@ -66,22 +50,39 @@ unsigned int linear_search(unsigned int *pointer, unsigned int n, unsigned int f
 }
 
 
+float HexToDecimal(unsigned int* HEX_ptr) {
 
-int main(){
+	unsigned int decimalValue = *HEX_ptr & 0xff;
+	unsigned int unitsValue = *HEX_ptr & 0xff0000;
+	unsigned int tensValue = *HEX_ptr & 0xff000000;
+
+	decimalValue = linear_search(lookUpTable, 10, decimalValue);
+	unitsValue = linear_search(lookUpTable, 10, unitsValue);
+	tensValue = linear_search(lookUpTable, 10, tensValue);
+
+	//Conversion to float
+	return tensValue * 10.0 + unitsValue * 1.0 + (decimalValue / 10.0);
+
+}
+
+
+
+
+int main() {
 	//declare and initialize pointers to the addresses
 
 	volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
-    volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE;//Address of GPIO
+	volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE;//Address of GPIO
 	volatile unsigned int * HEX_ptr = (unsigned int *)HEX3_HEX0_BASE;
 	volatile unsigned int * BTN_ptr = (unsigned int *)BTN_BASE;
 
-    //set bit as output, bit = 1, 0001
-    *(JP1_ptr + 1) |= 0x1;
-    
-    //turn off LEDs and GPIO ports to start
-    unsigned int LED_value = 0x0;
-    *LED_ptr = LED_value;
-    *JP1_ptr = LED_value;
+	//set bit as output, bit = 1, 0001
+	*(JP1_ptr + 1) |= 0x1;
+
+	//turn off LEDs and GPIO ports to start
+	unsigned int LED_value = 0x0;
+	*LED_ptr = LED_value;
+	*JP1_ptr = LED_value;
 
 
 	*HEX_ptr = lookUpTable[0];
@@ -90,5 +91,5 @@ int main(){
 
 
 
-    
+
 }
