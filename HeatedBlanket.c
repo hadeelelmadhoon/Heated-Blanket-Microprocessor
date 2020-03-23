@@ -11,6 +11,9 @@
 
 volatile float desiredTemp;
 volatile float currTemp;
+int lookUpTable[10] =
+{ 0x3F, 0x6, 0x5B, 0x4F, 0x66,
+0x6D, 0x7D, 0x7, 0x7F, 0x67 };
 
 
 void increaseTemp() {
@@ -39,13 +42,33 @@ void decreaseTemp() {
 }
 
 
-float HexToDecimal() {
+float HexToDecimal(unsigned int* HEX_ptr) {
 
 	unsigned int decimalValue = *HEX_ptr & 0xff;
 	unsigned int unitsValue = *HEX_ptr & 0xff0000;
 	unsigned int tensValue = *HEX_ptr & 0xff000000;
+	
+	decimalValue = linear_search(lookUpTable, 10, decimalValue);
+	unitsValue= linear_search(lookUpTable, 10, unitsValue);
+	tensValue= linear_search(lookUpTable, 10, tensValue);
+
+	//Conversion to float
+	return tensValue * 10.0 + unitsValue * 1.0 + (decimalValue / 10.0);
 
 }
+
+unsigned int linear_search(unsigned int *pointer, unsigned int n, unsigned int find)
+{
+	for (int c = 0; c < n; c++)
+	{
+		if (*(pointer + c) == find)
+			return c;
+	}
+
+	return -1;
+}
+
+
 
 int main(){
 	//declare and initialize pointers to the addresses
@@ -57,10 +80,6 @@ int main(){
     //turn off all LEDs to start
     unsigned int LED_value = 0x0;
     *LED_ptr = LED_value;
-
-	int lookUpTable[10] =
-	{ 0x3F, 0x6, 0x5B, 0x4F, 0x66,
-	0x6D, 0x7D, 0x7, 0x7F, 0x67 };
 
 
 	*HEX_ptr = lookUpTable[0];
