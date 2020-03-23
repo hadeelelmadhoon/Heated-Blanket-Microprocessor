@@ -23,10 +23,6 @@ void increaseTemp() {
 
 //functions
 
-float HexToDecimal(){
-	
-}
-
 void setDesiredTemp(){
 	// value to determine if desired temp should be changes
 	bool setTemp = false;
