@@ -16,17 +16,22 @@ int lookUpTable[10] =
 { 0x3F, 0x6, 0x5B, 0x4F, 0x66,
 0x6D, 0x7D, 0x7, 0x7F, 0x67 };
 
+void increaseTemp() {
+	currTemp += 1;
+}
+
+
 //functions
 
-void setDesiredTemp(unsigned int *BTN_ptr) {
+void setDesiredTemp(unsigned int *BTN_ptr, unsigned int *HEX_ptr) {
 	// value to determine if desired temp should be changes
-	bool setTemp = false;
+	int setTemp = 0;
 	// variables to hold each number 
 	int decimal = 0, ones = 0, tens = 0;
 
 	// check if B0 is pressed
-	if (BTN_ptr &= 0x01) {
-		setTemp = true;
+	if (*BTN_ptr & 0x01) {
+		setTemp = 1;
 	}
 
 	// loop while setTemp is true
@@ -63,7 +68,7 @@ void setDesiredTemp(unsigned int *BTN_ptr) {
 		// check if B0 is pressed
 		else if (*BTN_ptr & 0x01) {
 			// set boolean to false to exit the function and save desired temperature
-			setTemp = false;
+			setTemp = 0;
 		}
 	}
 
@@ -83,9 +88,7 @@ void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr) {
 	*JP1_ptr = LED_value;
 }
 
-void increaseTemp() {
-	currTemp += 1;
-}
+//functions
 
 void decreaseTemp() {
 	currTemp -= 1;
