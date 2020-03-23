@@ -7,7 +7,7 @@
 
 
 
-//declare gloabl variables
+//declare global variables
 
 volatile float desiredTemp;
 volatile float currTemp;
@@ -20,17 +20,20 @@ int lookUpTable[10] =
 //functions
 
 void setDesiredTemp(unsigned int *BTN_ptr, unsigned int *HEX_ptr) {
-	// value to determine if desired temp should be changes
+	
+	// value to determine if desired temp should be changed
 	int setTemp = 0;
+	
 	// variables to hold each number 
 	int decimal = 0, ones = 0, tens = 0;
 
 	// check if B0 is pressed
 	if (*BTN_ptr & 0x01) {
+		// enter state to edit desired temp
 		setTemp = 1;
 	}
 
-	// loop while setTemp is true
+	// loop while setTemp is 1
 	while (setTemp) {
 
 		// check if B3 is pressed
@@ -84,8 +87,6 @@ void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr,unsigned int*HEX
 	*JP1_ptr = LED_value;
 }
 
-//functions
-
 void decreaseTemp(unsigned int *HEX_ptr) {
 	currTemp -= 1;
 	displayHex(Hex_ptr,currTemp);
@@ -96,7 +97,6 @@ void increaseTemp(unsigned int *HEX_ptr) {
 	displayHex(Hex_ptr, currTemp);
 
 }
-
 
 unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 {
@@ -118,7 +118,6 @@ void displayHex(unsigned int *HEX_ptr,float currTemp) {
 	*HEX_ptr |= lookUpTable[unitsValue] << 16;
 	*HEX_ptr |= lookUpTable[tensValue] << 24;
 
-
 }
 
 float HexToDecimal(unsigned int* HEX_ptr) {
@@ -137,24 +136,24 @@ float HexToDecimal(unsigned int* HEX_ptr) {
 }
 
 int main() {
-	//declare and initialize pointers to the addresses
-
-	volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE;//Address of LED
-	volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE;//Address of GPIO
+	
+	// declare and initialize pointers to the addresses
+	volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE; // Address of LED
+	volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE; // Address of GPIO
 	volatile unsigned int * HEX_ptr = (unsigned int *)HEX3_HEX0_BASE;
 	volatile unsigned int * BTN_ptr = (unsigned int *)BTN_BASE;
 	volatile unsigned int * SW_ptr = (unsigned int *)SW_BASE;
 
 
-	//set bit as output, bit = 1, 0001
+	// set bit as output, bit = 1, 0001
 	*(JP1_ptr + 1) |= 0x1;
 
-	//turn off LEDs and GPIO ports to start
+	// turn off LEDs and GPIO ports to start
 	unsigned int LED_value = 0x0;
 	*LED_ptr = LED_value;
 	*JP1_ptr = LED_value;
 
-
+	// set display to be 00 0
 	*HEX_ptr = lookUpTable[0];
 	*HEX_ptr |= lookUpTable[0] << 16;
 	*HEX_ptr |= lookUpTable[0] << 24;
