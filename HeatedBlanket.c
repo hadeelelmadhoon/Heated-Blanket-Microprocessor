@@ -16,10 +16,6 @@ int lookUpTable[10] =
 { 0x3F, 0x6, 0x5B, 0x4F, 0x66,
 0x6D, 0x7D, 0x7, 0x7F, 0x67 };
 
-void increaseTemp() {
-	currTemp += 1;
-}
-
 
 //functions
 
@@ -76,13 +72,13 @@ void setDesiredTemp(unsigned int *BTN_ptr, unsigned int *HEX_ptr) {
 	desiredTemp = (tens * 10.0) + ones + (decimal / 10.0);
 }
 
-void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr) {
+void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr,unsigned int*HEX_ptr) {
 	unsigned int LED_value = 0x0;
 
 	//turn on LED
 	if (currTemp <= (desiredTemp - 2.0)) {
 		LED_value = 0x1;
-		increaseTemp();
+		increaseTemp(HEX_ptr);
 	}
 	*LED_ptr = LED_value;
 	*JP1_ptr = LED_value;
@@ -90,9 +86,17 @@ void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr) {
 
 //functions
 
-void decreaseTemp() {
+void decreaseTemp(unsigned int *HEX_ptr) {
 	currTemp -= 1;
+	displayHex(Hex_ptr,currTemp);
 }
+
+void increaseTemp(unsigned int *HEX_ptr) {
+	currTemp += 2;
+	displayHex(Hex_ptr, currTemp);
+
+}
+
 
 unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 {
@@ -105,6 +109,17 @@ unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 	return -1;
 }
 
+void displayHex(unsigned int *HEX_ptr,float currTemp) {
+	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0)) * 10;
+	unsigned int unitsValue = (unsigned int)currTemp % 10;
+	unsigned int tensValue = ((unsigned int)currTemp - unitsValue) / 10;
+
+	*HEX_ptr = lookUpTable[decimalValue];
+	*HEX_ptr |= lookUpTable[unitsValue] << 16;
+	*HEX_ptr |= lookUpTable[tensValue] << 24;
+
+
+}
 
 float HexToDecimal(unsigned int* HEX_ptr) {
 
@@ -148,6 +163,8 @@ int main() {
 	while (1) {
 		if (SW_ptr & 0x1) {
 			setDesiredTemp(BTN_ptr, HEX_ptr);
+			stimulateHeat(LED_ptr, JP1_ptr);
+			decreaseTemp(HEX_ptr);
 		}
 		else {
 
