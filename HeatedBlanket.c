@@ -17,7 +17,7 @@ void increaseTemp() {
 	currTemp += 1;
 }
 
-void stimulateHeat(unsigned int *LED_ptr){
+void stimulateHeat(unsigned int *LED_ptr, unsigned int *JP1_ptr){
     unsigned int LED_value = 0x0;
     
     //turn on LED
