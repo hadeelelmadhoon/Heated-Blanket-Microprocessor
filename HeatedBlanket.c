@@ -19,6 +19,29 @@ int lookUpTable[10] =
 
 //functions
 
+void displayHex(volatile unsigned int *HEX_ptr, float currTemp) {
+	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0) * 10;
+	unsigned int unitsValue = (unsigned int)currTemp % 10;
+	unsigned int tensValue = ((unsigned int)currTemp - unitsValue) / 10;
+
+	*HEX_ptr = lookUpTable[decimalValue];
+	*HEX_ptr |= lookUpTable[unitsValue] << 16;
+	*HEX_ptr |= lookUpTable[tensValue] << 24;
+
+
+}
+
+void decreaseTemp(volatile unsigned int *HEX_ptr) {
+	currTemp -= 1;
+	displayHex(HEX_ptr, currTemp);
+}
+
+void increaseTemp(volatile unsigned int *HEX_ptr) {
+	currTemp += 2;
+	displayHex(HEX_ptr, currTemp);
+
+}
+
 void setDesiredTemp(volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
 	// value to determine if desired temp should be changes
 	int setTemp = 0;
@@ -89,17 +112,6 @@ void setDesiredTemp(volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_p
 	desiredTemp = (tens * 10.0) + ones + (decimal / 10.0);
 }
 
-void decreaseTemp(volatile unsigned int *HEX_ptr) {
-	currTemp -= 1;
-	displayHex(HEX_ptr, currTemp);
-}
-
-void increaseTemp(volatile unsigned int *HEX_ptr) {
-	currTemp += 2;
-	displayHex(HEX_ptr, currTemp);
-
-}
-
 void stimulateHeat(volatile unsigned int *LED_ptr, volatile unsigned int *JP1_ptr, volatile unsigned int*HEX_ptr) {
 	unsigned int LED_value = 0x0;
 
@@ -121,17 +133,6 @@ unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 	}
 
 	return -1;
-}
-
-void displayHex(volatile unsigned int *HEX_ptr,float currTemp) {
-	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0)) * 10;
-	unsigned int unitsValue = (unsigned int)currTemp % 10;
-	unsigned int tensValue = ((unsigned int)currTemp - unitsValue) / 10;
-
-	*HEX_ptr = lookUpTable[decimalValue];
-	*HEX_ptr |= lookUpTable[unitsValue] << 16;
-	*HEX_ptr |= lookUpTable[tensValue] << 24;
-
 }
 
 float HexToDecimal(volatile unsigned int* HEX_ptr) {
