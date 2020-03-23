@@ -72,6 +72,17 @@ void setDesiredTemp(volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_p
 	desiredTemp = (tens * 10.0) + ones + (decimal / 10.0);
 }
 
+void decreaseTemp(volatile unsigned int *HEX_ptr) {
+	currTemp -= 1;
+	displayHex(HEX_ptr, currTemp);
+}
+
+void increaseTemp(volatile unsigned int *HEX_ptr) {
+	currTemp += 2;
+	displayHex(HEX_ptr, currTemp);
+
+}
+
 void stimulateHeat(volatile unsigned int *LED_ptr, volatile unsigned int *JP1_ptr, volatile unsigned int*HEX_ptr) {
 	unsigned int LED_value = 0x0;
 
@@ -84,18 +95,6 @@ void stimulateHeat(volatile unsigned int *LED_ptr, volatile unsigned int *JP1_pt
 	*JP1_ptr = LED_value;
 }
 
-//functions
-
-void decreaseTemp(volatile unsigned int *HEX_ptr) {
-	currTemp -= 1;
-	displayHex(HEX_ptr,currTemp);
-}
-
-void increaseTemp(volatile unsigned int *HEX_ptr) {
-	currTemp += 2;
-	displayHex(HEX_ptr, currTemp);
-
-}
 
 
 unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
@@ -110,7 +109,7 @@ unsigned int linear_search(int *pointer, unsigned int n, unsigned int find)
 }
 
 void displayHex(volatile unsigned int *HEX_ptr,float currTemp) {
-	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0) * 10;
+	unsigned int decimalValue = (currTemp - ((unsigned int)currTemp)*1.0)) * 10;
 	unsigned int unitsValue = (unsigned int)currTemp % 10;
 	unsigned int tensValue = ((unsigned int)currTemp - unitsValue) / 10;
 
