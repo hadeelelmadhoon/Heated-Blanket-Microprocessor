@@ -42,69 +42,74 @@ void increaseTemp(volatile unsigned int *HEX_ptr) {
 
 }
 
-void setDesiredTemp(volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
+void setDesiredTemp(volatile unsigned int *SW_ptr, volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
 	// value to determine if desired temp should be changes
 	int setTemp = 0;
-	
+
 	// variables to hold each number 
 	int decimal = 0, ones = 0, tens = 0;
 
 	// check if B0 is pressed
-	if (*BTN_ptr & 0x01) {
+	if (*SW_ptr & 0x2) {
 		// enter state to edit desired temp
 		setTemp = 1;
-		
-		// wait until button turns off
-		while(*BTN_ptr & 0x01);
+
 	}
 
 	// loop while setTemp is 1
 	while (setTemp) {
 
-		// check if B3 is pressed
+
 		if (*BTN_ptr & 0x04) {
 			// if current value is 3, reset to 0 (max temperature is 30.0)
-			if (tens == 3) {
+			if (tens == 4) {
 				tens = 0;
-			}
-			// set tens display to value of tens
-			*HEX_ptr |= lookUpTable[tens++] << 24;
-			
-			// wait until button turns off
-			while(*BTN_ptr & 0x04);
-		}
-		// check if B1 is pressed
-		else if (*BTN_ptr & 0x02) {
-			// if current value is 9, reset to 0
-			if (tens == 3 || decimal == 9) {
+				ones = 0;
 				decimal = 0;
+				*HEX_ptr = 0x3F3F003F;
 			}
-			// set decimal display to value of decimal
-			*HEX_ptr |= lookUpTable[decimal++];
-			
+			else
+				// set tens display to value of tens
+				*HEX_ptr = (lookUpTable[tens++] << 24) | (*HEX_ptr & 0xffffff);
+
 			// wait until button turns off
-			while(*BTN_ptr & 0x02);
+			while (*BTN_ptr & 0x04);
 		}
+
+
 		// check if B2 is pressed
-		else if (*BTN_ptr & 0x03) {
+		if (*BTN_ptr & 0x02) {
 			// if current value is 9, reset to 0
-			if (tens == 3 || ones == 9) {
+			if (tens == 4 || ones == 10) {
 				ones = 0;
 			}
 			// set ones display to value of ones
-			*HEX_ptr |= lookUpTable[ones++] << 16;
-			
+			*HEX_ptr = (lookUpTable[ones++] << 16) | (*HEX_ptr & 0xff0000ff);
+
 			// wait until button turns off
-			while(*BTN_ptr & 0x03);
+			while (*BTN_ptr & 0x02);
+		}
+		if (*BTN_ptr & 0x01) {
+
+			// if current value is 9, reset to 0
+			if (tens == 4 || decimal == 10) {
+				decimal = 0;
+			}
+			// set decimal display to value of decimal
+			*HEX_ptr = lookUpTable[decimal++] | (*HEX_ptr & 0xffffff00);
+
+			// wait until button turns off
+			while (*BTN_ptr & 0x01);
 		}
 
+
+
+
 		// check if B0 is pressed
-		else if (*BTN_ptr & 0x01) {
+		if ((*SW_ptr & 0x02) == 0) {
 			// set boolean to false to exit the function and save desired temperature
 			setTemp = 0;
-			
-			// wait until button turns off
-			while(*BTN_ptr & 0x01);
+
 		}
 	}
 
@@ -151,7 +156,7 @@ float HexToDecimal(volatile unsigned int* HEX_ptr) {
 }
 
 int main() {
-	
+
 	// declare and initialize pointers to the addresses
 	volatile unsigned int * LED_ptr = (unsigned int *)LED_BASE; // Address of LED
 	volatile unsigned int * JP1_ptr = (unsigned int *)JP1_BASE; // Address of GPIO
@@ -176,9 +181,9 @@ int main() {
 
 	while (1) {
 		if (*SW_ptr & 0x1) {
-			setDesiredTemp(BTN_ptr, HEX_ptr);
-			stimulateHeat(LED_ptr, JP1_ptr,HEX_ptr);
-			decreaseTemp(HEX_ptr);
+			setDesiredTemp(SW_ptr, BTN_ptr, HEX_ptr);
+			//stimulateHeat(LED_ptr, JP1_ptr,HEX_ptr);
+			//decreaseTemp(HEX_ptr);
 		}
 		else {
 
