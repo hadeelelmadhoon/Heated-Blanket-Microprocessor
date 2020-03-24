@@ -68,10 +68,12 @@ void setDesiredTemp(volatile unsigned int *SW_ptr, volatile unsigned int *BTN_pt
 				decimal = 0;
 				*HEX_ptr = 0x3F3F003F;
 			}
-			else
-				// set tens display to value of tens
-				*HEX_ptr = (lookUpTable[tens++] << 24) | (*HEX_ptr & 0xffffff);
+			// set tens display to value of tens
+			*HEX_ptr = (lookUpTable[tens++] << 24) | (*HEX_ptr & 0xffffff);
+			if (tens == 4) {
+				*HEX_ptr = 0x4F3F003F;
 
+			}
 			// wait until button turns off
 			while (*BTN_ptr & 0x04);
 		}
