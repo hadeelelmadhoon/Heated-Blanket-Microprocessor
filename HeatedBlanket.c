@@ -21,11 +21,11 @@ int lookUpTable[10] =
 //functions
 
 void displayTemp(volatile unsigned int *HEX5_ptr, volatile unsigned int *HEX_ptr, float currTemp, float desiredTemp) {
-	unsigned int decimalValue_current = (currTemp - ((unsigned int)currTemp)*1.0) * 10;
+	unsigned int decimalValue_current = (currTemp - ((unsigned int)currTemp)*1.0) * 10 + 0.1;
 	unsigned int unitsValue_current = (unsigned int)currTemp % 10;
 	unsigned int tensValue_current = ((unsigned int)currTemp - unitsValue_current) / 10;
 
-	unsigned int decimalValue_desired = (desiredTemp - ((unsigned int)desiredTemp)*1.0) * 10;
+	unsigned int decimalValue_desired = (desiredTemp - (unsigned int)desiredTemp)*10.0 + 0.1;
 	unsigned int unitsValue_desired = (unsigned int)desiredTemp % 10;
 	unsigned int tensValue_desired = ((unsigned int)desiredTemp - unitsValue_desired) / 10;
 
@@ -39,7 +39,7 @@ void displayTemp(volatile unsigned int *HEX5_ptr, volatile unsigned int *HEX_ptr
 }
 
 
-void setDesiredTemp(volatile unsigned int *SW_ptr, volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
+void setDesiredTemp(volatile unsigned int*HEX5_ptr, volatile unsigned int *SW_ptr, volatile unsigned int *BTN_ptr, volatile unsigned int *HEX_ptr) {
 	// value to determine if desired temp should be changes
 	int setTemp = 0;
 
@@ -52,8 +52,9 @@ void setDesiredTemp(volatile unsigned int *SW_ptr, volatile unsigned int *BTN_pt
 		setTemp = 1;
 		// set display to be 00 0
 		*HEX_ptr = lookUpTable[0];
-		*HEX_ptr |= lookUpTable[0] << 8;
-		*HEX_ptr |= lookUpTable[1] << 1;
+		*HEX_ptr |= lookUpTable[0] << 16;
+		*HEX_ptr |= lookUpTable[1] << 24;
+		*HEX5_ptr = 0x0;
 
 	}
 
@@ -162,12 +163,11 @@ int main() {
 
 	int ms = 0;
 
-	desiredTemp = 25.5;
+	desiredTemp = 25.9;
 	currTemp = 25;
 
 	while (1) {
-		//if (*SW_ptr & 0x1) {
-		setDesiredTemp(SW_ptr, BTN_ptr, HEX_ptr);
+		setDesiredTemp(HEX5_ptr, SW_ptr, BTN_ptr, HEX_ptr);
 
 		while (*timer_ptr & 0x1 == 0);
 		*timer_ptr &= ~1;
@@ -176,21 +176,20 @@ int main() {
 			ms = 0;
 			if (currTemp <= (desiredTemp - 0.5)) {
 				*LED_ptr = 0x1;
+				*JP1_ptr = 0x1;
 				currTemp += 0.1;
 
 			}
 			else {
-				currTemp -= 0.1;
+				currTemp -= 1;
 				*LED_ptr = 0x0;
+				*JP1_ptr = 0x0;
+
 			}
 			displayTemp(HEX5_ptr, HEX_ptr, currTemp, desiredTemp);
 
 
 		}
-		//stimulateHeat(LED_ptr, JP1_ptr,HEX_ptr);
-		//decreaseTemp(HEX_ptr);
-		//displayHex(HEX_ptr, currTemp);
-	//}
 
 	}
 
